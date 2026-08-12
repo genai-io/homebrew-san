@@ -45,6 +45,8 @@ class San < Formula
   end
 
   test do
-    assert_match "san version #{version}", shell_output("#{bin}/san version")
+    # Released binaries carry a v prefix ("san version v1.22.2") because the
+    # Makefile versions them with `git describe --tags`.
+    assert_match /san version v?#{version}/, shell_output("#{bin}/san version")
   end
 end
