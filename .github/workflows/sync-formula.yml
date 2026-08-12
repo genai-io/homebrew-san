@@ -1,10 +1,9 @@
 name: Sync formula from san releases
 
-# Backstop for the release pipeline: genai-io/san's release workflow updates
-# this formula on every v* tag push, but that step is skipped when the
-# HOMEBREW_TAP_TOKEN secret is missing. This job re-checks the latest tag
-# daily and bumps the formula (tag + sha256s) when it is stale — using only
-# this repo's own GITHUB_TOKEN, so it needs no secrets.
+# Keeps Formula/san.rb pointing at the latest genai-io/san release: checks
+# the newest v* tag daily (and on demand), and regenerates the formula with
+# fresh sha256s when it is stale. Self-contained — uses only this repo's own
+# GITHUB_TOKEN, so it needs no secrets.
 
 on:
   schedule:
@@ -60,11 +59,7 @@ jobs:
       - name: Regenerate formula
         if: steps.stale.outputs.stale == 'true'
         run: |
-          # Script and template come from the san repo so the tap repo never
-          # forks the generation logic.
-          curl -fsSL https://raw.githubusercontent.com/genai-io/san/main/.github/scripts/update-formula.py -o /tmp/update-formula.py
-          curl -fsSL https://raw.githubusercontent.com/genai-io/san/main/.github/scripts/san.rb.tmpl -o /tmp/san.rb.tmpl
-          python3 /tmp/update-formula.py \
+          python3 .github/scripts/update-formula.py \
             --version "${{ steps.latest.outputs.tag }}" \
             --tarballs \
               /tmp/san-release/san_darwin_arm64.tar.gz \
