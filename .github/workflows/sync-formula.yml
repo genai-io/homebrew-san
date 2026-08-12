@@ -1,0 +1,84 @@
+name: Sync formula from san releases
+
+# Backstop for the release pipeline: genai-io/san's release workflow updates
+# this formula on every v* tag push, but that step is skipped when the
+# HOMEBREW_TAP_TOKEN secret is missing. This job re-checks the latest tag
+# daily and bumps the formula (tag + sha256s) when it is stale — using only
+# this repo's own GITHUB_TOKEN, so it needs no secrets.
+
+on:
+  schedule:
+    - cron: "17 3 * * *" # daily, off-peak
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Resolve latest v* tag on genai-io/san
+        id: latest
+        run: |
+          tag=$(git ls-remote --tags --refs https://github.com/genai-io/san.git 'refs/tags/v*' \
+            | sed 's|.*refs/tags/||' | sort -V | tail -1)
+          if [ -z "$tag" ]; then
+            echo "::error:: no v* tags found on genai-io/san"
+            exit 1
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: Check formula is stale
+        id: stale
+        env:
+          LATEST_TAG: ${{ steps.latest.outputs.tag }}
+        run: |
+          current=$(python3 - <<'PY'
+          import re
+          text = open("Formula/san.rb").read()
+          m = re.search(r"releases/download/([^/\"]+)", text)
+          print(m.group(1) if m else "")
+          PY
+          )
+          echo "current=$current"
+          if [ "$current" != "$LATEST_TAG" ]; then
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "stale=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Download tarballs
+        if: steps.stale.outputs.stale == 'true'
+        run: |
+          mkdir -p /tmp/san-release
+          gh release download "${{ steps.latest.outputs.tag }}" --repo genai-io/san \
+            -p 'san_darwin_*.tar.gz' -p 'san_linux_*.tar.gz' -D /tmp/san-release
+
+      - name: Regenerate formula
+        if: steps.stale.outputs.stale == 'true'
+        run: |
+          # Script and template come from the san repo so the tap repo never
+          # forks the generation logic.
+          curl -fsSL https://raw.githubusercontent.com/genai-io/san/main/.github/scripts/update-formula.py -o /tmp/update-formula.py
+          curl -fsSL https://raw.githubusercontent.com/genai-io/san/main/.github/scripts/san.rb.tmpl -o /tmp/san.rb.tmpl
+          python3 /tmp/update-formula.py \
+            --version "${{ steps.latest.outputs.tag }}" \
+            --tarballs \
+              /tmp/san-release/san_darwin_arm64.tar.gz \
+              /tmp/san-release/san_darwin_amd64.tar.gz \
+              /tmp/san-release/san_linux_arm64.tar.gz \
+              /tmp/san-release/san_linux_amd64.tar.gz \
+            --out Formula/san.rb
+
+      - name: Commit and push
+        if: steps.stale.outputs.stale == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/san.rb
+          git diff --cached --quiet && { echo "formula unchanged"; exit 0; }
+          git commit -m "chore: sync formula to ${{ steps.latest.outputs.tag }}"
+          git push origin main

@@ -19,4 +19,4 @@ brew upgrade san
 
 ## How this tap is maintained
 
-`Formula/san.rb` is generated from `.github/scripts/san.rb.tmpl` in the san repository and updated automatically by the san release pipeline ([release.yml](https://github.com/genai-io/san/blob/main/.github/workflows/release.yml)) whenever a new `v*` tag is released. Please report formula issues on the [san issue tracker](https://github.com/genai-io/san/issues).
+`Formula/san.rb` is generated from `.github/scripts/san.rb.tmpl` in the san repository. It is updated automatically whenever a new `v*` tag is released (the san release pipeline runs [release.yml](https://github.com/genai-io/san/blob/main/.github/workflows/release.yml)), and a daily backstop job in this repo ([sync-formula.yml](.github/workflows/sync-formula.yml)) re-checks the latest tag and syncs the formula if anything was missed. Please report formula issues on the [san issue tracker](https://github.com/genai-io/san/issues).
