@@ -2,7 +2,7 @@ class San < Formula
   desc "Minimal overhead, maximum agent: a fast, open agent harness for the terminal"
   homepage "https://github.com/genai-io/san"
   # No explicit `version`: it is scanned from the literal release tag in the
-  # URLs below (v1.22.2), so the audit "version redundant" check stays quiet.
+  # URLs below (v1.22.3), so the audit "version redundant" check stays quiet.
   license "Apache-2.0"
 
   livecheck do
@@ -12,19 +12,19 @@ class San < Formula
 
   if OS.mac?
     if Hardware::CPU.arm?
-      url "https://github.com/genai-io/san/releases/download/v1.22.2/san_darwin_arm64.tar.gz"
-      sha256 "95299a9fdfcadb7a442abc73defde5fa889b077aafe50ebc0d62a03a4423d7b5"
+      url "https://github.com/genai-io/san/releases/download/v1.22.3/san_darwin_arm64.tar.gz"
+      sha256 "a3f15c1aea2f39c70e7eba36382be941179fa60ddf62251c44bfa4d09b5e400d"
     else
-      url "https://github.com/genai-io/san/releases/download/v1.22.2/san_darwin_amd64.tar.gz"
-      sha256 "0610a48710cbe6550acd8ba7d256391c320fdb2b9ea3bfddce0ebfe5fb1988ad"
+      url "https://github.com/genai-io/san/releases/download/v1.22.3/san_darwin_amd64.tar.gz"
+      sha256 "efaf51438fd8ad3675469b17df8c28bd981fff8c5df5a228681bf499701f795c"
     end
   elsif OS.linux?
     if Hardware::CPU.arm?
-      url "https://github.com/genai-io/san/releases/download/v1.22.2/san_linux_arm64.tar.gz"
-      sha256 "11a1497bc55330ec7c50d5d707d79400956e8f764cb10b531e8bc729811bb2f2"
+      url "https://github.com/genai-io/san/releases/download/v1.22.3/san_linux_arm64.tar.gz"
+      sha256 "3553280d67c4674a5e125611054bf1c3f78569c2a7114643cd10d2ac9a5a9670"
     else
-      url "https://github.com/genai-io/san/releases/download/v1.22.2/san_linux_amd64.tar.gz"
-      sha256 "17134a1cd5f94d06ef533cb44ee961455f9a3624d9c79cfa92fa015e8e632e25"
+      url "https://github.com/genai-io/san/releases/download/v1.22.3/san_linux_amd64.tar.gz"
+      sha256 "7e660d87cb1259b40e848fb8ab718e2450f8359b9c22e70919705a4ba7cd026b"
     end
   else
     odie "Unsupported platform"
