@@ -2,7 +2,7 @@ class San < Formula
   desc "Minimal overhead, maximum agent: a fast, open agent harness for the terminal"
   homepage "https://github.com/genai-io/san"
   # No explicit `version`: it is scanned from the literal release tag in the
-  # URLs below (v1.22.11), so the audit "version redundant" check stays quiet.
+  # URLs below (v1.23.0), so the audit "version redundant" check stays quiet.
   license "Apache-2.0"
 
   livecheck do
@@ -12,19 +12,19 @@ class San < Formula
 
   if OS.mac?
     if Hardware::CPU.arm?
-      url "https://github.com/genai-io/san/releases/download/v1.22.11/san_darwin_arm64.tar.gz"
-      sha256 "1f0b9b16eefba1888495c8ad066a0a8008dbf6a7cfbad32619c5e1478824f5b8"
+      url "https://github.com/genai-io/san/releases/download/v1.23.0/san_darwin_arm64.tar.gz"
+      sha256 "7e3ca69118a51d368bf4397cc9ed644cb2aa95bdb6f4992a97f9b27f69cec943"
     else
-      url "https://github.com/genai-io/san/releases/download/v1.22.11/san_darwin_amd64.tar.gz"
-      sha256 "1978ed090043d032b6ac72e13dcd7a75e1f98fb3faedcde1b036d97fcaaee20d"
+      url "https://github.com/genai-io/san/releases/download/v1.23.0/san_darwin_amd64.tar.gz"
+      sha256 "a230e4b2c1f14ddc14eaea5f59389e3bc29f5a09e5ac38098528233462a9a694"
     end
   elsif OS.linux?
     if Hardware::CPU.arm?
-      url "https://github.com/genai-io/san/releases/download/v1.22.11/san_linux_arm64.tar.gz"
-      sha256 "d941df8acef9a51976d251cb136e1eadec7674ab5425edb532aa85f464dd394a"
+      url "https://github.com/genai-io/san/releases/download/v1.23.0/san_linux_arm64.tar.gz"
+      sha256 "beb1806552658c05f4f80a436408cc40f9ef53123d071e4e7b9a6663eaadb1a1"
     else
-      url "https://github.com/genai-io/san/releases/download/v1.22.11/san_linux_amd64.tar.gz"
-      sha256 "46601cd2199bfb93382966caa2910ffccfd226f901a261763d92f4462bdd6607"
+      url "https://github.com/genai-io/san/releases/download/v1.23.0/san_linux_amd64.tar.gz"
+      sha256 "f5c850cb85c7a864b3ec9ee926b89eccf1acf707c5e2d882257cfc5908b16b84"
     end
   else
     odie "Unsupported platform"
